@@ -1,0 +1,27 @@
+# Archivos de módulo
+*.iml
+
+# Gradle
+.gradle/
+local.properties
+
+# Build
+/build/
+/app/build/
+
+# Android Studio
+.idea/
+.idea/caches
+.idea/libraries
+.idea/modules.xml
+.idea/workspace.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+
+# NDK
+.externalNativeBuild
+.cxx
+
+# Otros
+.DS_Store
+/captures
