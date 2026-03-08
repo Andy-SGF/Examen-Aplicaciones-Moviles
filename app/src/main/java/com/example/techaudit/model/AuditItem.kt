@@ -4,8 +4,8 @@ package com.example.techaudit.model
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.ForeignKey
 import kotlinx.parcelize.Parcelize
-import java.util.Date
 
 enum class AuditStatus{
     PENDIENTE,
@@ -13,7 +13,17 @@ enum class AuditStatus{
     DANIADO,
     NO_ENCONTRADO
 }
-@Entity(tableName = "equipos")
+@Entity(tableName = "equipos",
+    foreignKeys = [
+        ForeignKey(
+            entity = Laboratorio::class,
+            parentColumns = ["id"],
+            childColumns = ["laboratorioId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
+
 @Parcelize
 data class AuditItem(
     @PrimaryKey
@@ -22,6 +32,7 @@ data class AuditItem(
     val nombre:String,
     val ubicacion:String,
     val fechaRegistro:String,
+    val laboratorioId:String,
     var estado: AuditStatus = AuditStatus.PENDIENTE,
     var notas: String ="",
     var fotoUri:String?=null

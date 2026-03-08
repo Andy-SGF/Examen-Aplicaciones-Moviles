@@ -27,5 +27,4 @@ class AuditViewModel(application: Application): AndroidViewModel(application) {
         repository.delete(item)
     }
 
-
 }
