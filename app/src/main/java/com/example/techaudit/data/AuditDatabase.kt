@@ -8,8 +8,9 @@ import androidx.room.RoomDatabase
 
 import androidx.room.TypeConverters
 import com.example.techaudit.model.AuditItem
+import com.example.techaudit.model.Laboratorio
 
-@Database(entities=[AuditItem::class], version = 1, exportSchema = false)
+@Database(entities=[AuditItem::class, Laboratorio::class], version = 2, exportSchema = false)
 @TypeConverters(Converters::class)
 
 abstract class AuditDatabase: RoomDatabase(){

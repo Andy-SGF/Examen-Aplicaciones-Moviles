@@ -8,13 +8,17 @@ import androidx.room.Query
 import androidx.room.Update
 
 import com.example.techaudit.model.AuditItem
+import com.example.techaudit.model.Laboratorio
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AuditDao {
 
-    //Traer todos los equipos ordenados por fecha
+    //==============================
+    // EQUIPOS
+    //==============================
 
+    //Traer todos los equipos ordenados por fecha
     @Query("SELECT * FROM equipos ORDER BY fechaRegistro DESC")
     fun getAllItems() : Flow<List<AuditItem>>
 
@@ -33,5 +37,21 @@ interface AuditDao {
     //Eliminar un equipo
     @Delete
     suspend fun delete(Item: AuditItem)
+
+    //==============================
+    // LABORATORIOS
+    //==============================
+
+    //Traer todos los laboratorios
+    @Query("SELECT *FROM laboratorios")
+    fun getLaboratorios() :Flow<List<Laboratorio>>
+
+    //Insertar laboratorio
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertLaboratorio(lab: Laboratorio)
+
+    //Equipos por laboratorio
+    @Query("SELECT *FROM equipos WHERE laboratorioId = :labId")
+    fun getEquiposByLaboratorio(labId: String): Flow<List<AuditItem>>
 
 }
