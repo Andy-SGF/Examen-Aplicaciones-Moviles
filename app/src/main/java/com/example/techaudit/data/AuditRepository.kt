@@ -33,7 +33,7 @@ class AuditRepository (private val auditDao: AuditDao) {
         auditDao.insertLaboratorio(lab)
     }
 
-    fun getEquiposByLaboratorio(labId: String) =
+    fun getEquiposByLaboratorio(labId: Int) =
         auditDao.getEquiposByLaboratorio(labId)
 
 }

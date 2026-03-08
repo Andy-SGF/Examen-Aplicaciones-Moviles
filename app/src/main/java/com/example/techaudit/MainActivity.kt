@@ -1,6 +1,5 @@
 package com.example.techaudit
 
-import android.app.Activity
 import android.content.Intent
 import androidx.activity.enableEdgeToEdge
 import android.os.Bundle
@@ -9,28 +8,21 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.techaudit.adapter.AuditAdapter
-import com.example.techaudit.data.AuditDatabase
+import com.example.techaudit.adapter.LaboratorioAdapter
 import com.example.techaudit.databinding.ActivityMainBinding
-import com.example.techaudit.model.AuditItem
-import com.example.techaudit.model.AuditStatus
-import com.example.techaudit.ui.AuditViewModel
-import kotlinx.coroutines.launch
-import java.util.Date
-import java.util.UUID
+import com.example.techaudit.model.Laboratorio
+import com.example.techaudit.ui.LaboratorioViewModel
+
 
 
 class MainActivity : ComponentActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private lateinit var adapter: AuditAdapter
+    private lateinit var adapter: LaboratorioAdapter
 
-    private val viewModel: AuditViewModel by viewModels()
+    private val viewModel: LaboratorioViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,21 +31,14 @@ class MainActivity : ComponentActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setupRecyclerView()
-        configurarDeslizarParaBorrar()
+        ConfigurarRecycler()
+        observarLaboratorios()
+        configurarBotonAgregar()
 
-        viewModel.allItems.observe(this){ listaActualizada->
-            adapter.actualizarLista(listaActualizada)
-
+        // BOTON SINCRONIZAR
+        binding.btnSincronizar.setOnClickListener {
+            Toast.makeText(this,"Sincronizando...",Toast.LENGTH_SHORT).show()
         }
-
-
-        binding.fabAgregar.setOnClickListener {
-
-            val intent = Intent(this, AddEditActivity::class.java)
-            startActivity(intent)
-        }
-
 
         enableEdgeToEdge()
         ViewCompat.setOnApplyWindowInsetsListener(binding.root){ v, insets->
@@ -63,44 +48,37 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun setupRecyclerView(){
+    private fun ConfigurarRecycler(){
         //Inicializar el adapter pasando la lista y la accion del click
 
-        val adapter = AuditAdapter(mutableListOf()){ itemSeleccionado ->
-            //Este lambda se ejecuta cuando doy clic a la tarjeta
+        adapter = LaboratorioAdapter(mutableListOf()){ laboratorio ->
 
-            val intent = Intent(this, AddEditActivity::class.java)
-
-            intent.putExtra("EXTRA_ITEM_EDITAR",itemSeleccionado)
-            startActivity(intent)
-
+            abrirLaboratorio(laboratorio)
         }
         binding.rvAuditoria.adapter = adapter
         binding.rvAuditoria.layoutManager = LinearLayoutManager(this)
     }
 
-    private fun configurarDeslizarParaBorrar() {
-        val swipeHandler = object : ItemTouchHelper.SimpleCallback(
-            0, // No nos importa mover arriba/abajo
-            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT // Permitir deslizar a izq y der
-        ) {
-            override fun onMove(r: RecyclerView, v: RecyclerView.ViewHolder, t: RecyclerView.ViewHolder): Boolean = false
-
-            // Este método se dispara cuando el usuario suelta el dedo tras deslizar
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                val posicion = viewHolder.adapterPosition
-                val itemABorrar = adapter.listaAuditoria[posicion]
-
-                viewModel.delete(itemABorrar)
-                Toast.makeText(this@MainActivity, "Equipo Eliminado", Toast.LENGTH_SHORT).show()
-
-            }
+    private fun observarLaboratorios(){
+        viewModel.allLaboratorios.observe(this){ lista ->
+            adapter.actualizarLista(lista)
         }
-
-        // Conectamos este comportamiento a nuestra lista
-        val itemTouchHelper = ItemTouchHelper(swipeHandler)
-        itemTouchHelper.attachToRecyclerView(binding.rvAuditoria)
     }
 
+    private fun configurarBotonAgregar(){
+        binding.fabAgregar.setOnClickListener {
+            val intent = Intent(this, AddLaboratorioActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    private fun abrirLaboratorio(lab: Laboratorio){
+        val intent = Intent(this, EquiposLaboratorioActivity::class.java)
+
+        intent.putExtra("LAB_ID",lab.id)
+        intent.putExtra("LAB_NOMBRE",lab.nombre)
+
+        startActivity(intent)
+    }
 
 }

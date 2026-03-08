@@ -8,6 +8,7 @@
     android:padding="24dp"
     tools:context=".AddEditActivity">
 
+
     <TextView
         android:text="Nuevo Registro"
         android:textSize="24sp"
