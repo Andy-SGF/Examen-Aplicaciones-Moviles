@@ -23,8 +23,19 @@ class AuditViewModel(application: Application): AndroidViewModel(application) {
         allItems = repository.allItems.asLiveData()
     }
 
+    fun insert(item: AuditItem) = viewModelScope.launch{
+        repository.insert(item)
+    }
+
+    fun update(item: AuditItem) = viewModelScope.launch{
+        repository.update(item)
+    }
     fun delete(item: AuditItem) = viewModelScope.launch{
         repository.delete(item)
+    }
+
+    fun getEquiposByLaboratorio(labId: Int): LiveData<List<AuditItem>> {
+        return repository.getEquiposByLaboratorio(labId).asLiveData()
     }
 
 }

@@ -10,8 +10,8 @@ import android.os.Parcelable
 @Parcelize
 data class Laboratorio(
 
-    @PrimaryKey
-    val id:String,
+    @PrimaryKey(autoGenerate = true)
+    val id:Int =0,
 
     val nombre:String,
     val edificio:String

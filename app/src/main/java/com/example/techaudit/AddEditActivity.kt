@@ -5,14 +5,14 @@ import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.lifecycleScope
 import com.example.techaudit.databinding.ActivityAddEditBinding
 import com.example.techaudit.model.AuditItem
 import com.example.techaudit.model.AuditStatus
-import kotlinx.coroutines.launch
+import com.example.techaudit.ui.AuditViewModel
 import java.util.Date
 import java.util.UUID
 
@@ -23,11 +23,18 @@ class AddEditActivity : AppCompatActivity() {
     //Variable global para saber si estamos editando
     private var itemEditar: AuditItem?= null
 
+    private val viewModel: AuditViewModel by viewModels()
+
+    private var laboratorioId: Int = -1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityAddEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        //Recibir datos del laboratorio
+        laboratorioId = intent.getIntExtra("LAB_ID",-1)
 
         //Detectar modo EDICION
         if(intent.hasExtra("EXTRA_ITEM_EDITAR")){
@@ -97,8 +104,6 @@ class AddEditActivity : AppCompatActivity() {
         // El Spinner nos da la posición (0, 1, 2...), la usamos para buscar en el Enum
         val estadoSeleccionado = binding.spEstado.selectedItem as AuditStatus
 
-       val dataBase = (application as TechAuditApp).database //Base de datos
-        lifecycleScope.launch{
             if(itemEditar == null){
                 //Crear
                 val nuevoItem = AuditItem(
@@ -107,10 +112,11 @@ class AddEditActivity : AppCompatActivity() {
                     ubicacion = ubicacion,
                     fechaRegistro = Date().toString(),
                     estado = estadoSeleccionado,
-                    notas = notas
+                    notas = notas,
+                    laboratorioId = laboratorioId
                 )
 
-                dataBase.auditDao().insert(nuevoItem)
+                viewModel.insert(nuevoItem)
                 Toast.makeText(this@AddEditActivity, "Equipo Creado", Toast.LENGTH_SHORT).show()
 
             } else{
@@ -122,10 +128,9 @@ class AddEditActivity : AppCompatActivity() {
                     notas = notas
                 )
 
-                dataBase.auditDao().update(itemActualizado)
+                viewModel.update(itemActualizado)
                 Toast.makeText(this@AddEditActivity, "Equipo Actualizado", Toast.LENGTH_SHORT).show()
             }
             finish() //Regresar al main
-        }
     }
 }

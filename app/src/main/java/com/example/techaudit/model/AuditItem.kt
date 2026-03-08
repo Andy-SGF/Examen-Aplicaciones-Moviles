@@ -32,7 +32,7 @@ data class AuditItem(
     val nombre:String,
     val ubicacion:String,
     val fechaRegistro:String,
-    val laboratorioId:String,
+    val laboratorioId:Int,
     var estado: AuditStatus = AuditStatus.PENDIENTE,
     var notas: String ="",
     var fotoUri:String?=null

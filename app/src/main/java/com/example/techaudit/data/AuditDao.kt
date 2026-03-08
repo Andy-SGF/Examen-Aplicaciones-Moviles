@@ -43,7 +43,7 @@ interface AuditDao {
     //==============================
 
     //Traer todos los laboratorios
-    @Query("SELECT *FROM laboratorios")
+    @Query("SELECT * FROM laboratorios")
     fun getLaboratorios() :Flow<List<Laboratorio>>
 
     //Insertar laboratorio
@@ -51,7 +51,7 @@ interface AuditDao {
     suspend fun insertLaboratorio(lab: Laboratorio)
 
     //Equipos por laboratorio
-    @Query("SELECT *FROM equipos WHERE laboratorioId = :labId")
-    fun getEquiposByLaboratorio(labId: String): Flow<List<AuditItem>>
+    @Query("SELECT * FROM equipos WHERE laboratorioId = :labId")
+    fun getEquiposByLaboratorio(labId: Int): Flow<List<AuditItem>>
 
 }

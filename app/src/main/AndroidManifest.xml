@@ -15,6 +15,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TechAudit">
         <activity
+            android:name=".EquiposLaboratorioActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddLaboratorioActivity"
+            android:exported="false" />
+        <activity
             android:name=".AddEditActivity"
             android:exported="false" />
         <activity
