@@ -14,7 +14,7 @@ import com.example.techaudit.model.AuditItem
 
 class AuditAdapter (
 
-    private val listaAuditoria: MutableList<AuditItem>, //Listas de auditoria
+    val listaAuditoria: MutableList<AuditItem>, //Listas de auditoria
     private val onItemSelected: (AuditItem) -> Unit //Funcion lambda para selecionar elementos
 ): RecyclerView.Adapter<AuditAdapter.AuditViewHolder>() { //Hereda de RecyclerView.Adapter
 

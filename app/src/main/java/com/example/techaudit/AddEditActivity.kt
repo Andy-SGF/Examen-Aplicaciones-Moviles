@@ -20,11 +20,38 @@ class AddEditActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddEditBinding
 
+    //Variable global para saber si estamos editando
+    private var itemEditar: AuditItem?= null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityAddEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        //Detectar modo EDICION
+        if(intent.hasExtra("EXTRA_ITEM_EDITAR")){
+            //Recuperamos el objeto
+            itemEditar = if(android.os.Build.VERSION.SDK_INT >= 33){
+                intent.getParcelableExtra("EXTRA_ITEM_EDITAR", AuditItem::class.java)
+            }else{
+                @Suppress("DEPRECATION")
+                intent.getParcelableExtra("EXTRA_ITEM_EDITAR")
+            }
+
+        }
+
+        //Llenamos los campos de texto
+
+        itemEditar?.let{ item->
+            binding.etNombre.setText(item.nombre)
+            binding.etUbicacion.setText(item.ubicacion)
+            binding.etNotas.setText(item.notas)
+
+            //Seleccionar el Spinner correcto
+            val posicionSpinner = AuditStatus.values().indexOf(item.estado)
+            binding.spEstado.setSelection(posicionSpinner)
+        }
 
         enableEdgeToEdge()
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
@@ -36,7 +63,7 @@ class AddEditActivity : AppCompatActivity() {
         setupSpinner()
 
         binding.btnGuardar.setOnClickListener{
-            guardarRegistro()
+            guardarOActualizar()
         }
     }
 
@@ -54,7 +81,7 @@ class AddEditActivity : AppCompatActivity() {
         binding.spEstado.adapter = adapter
     }
 
-    private fun guardarRegistro() {
+    private fun guardarOActualizar() {
         // A. Capturar textos
         val nombre = binding.etNombre.text.toString()
         val ubicacion = binding.etUbicacion.text.toString()
@@ -70,25 +97,35 @@ class AddEditActivity : AppCompatActivity() {
         // El Spinner nos da la posición (0, 1, 2...), la usamos para buscar en el Enum
         val estadoSeleccionado = binding.spEstado.selectedItem as AuditStatus
 
-        // D. Crear el objeto
-        val nuevoItem = AuditItem(
-            id = UUID.randomUUID().toString(),
-            nombre = nombre,
-            ubicacion = ubicacion,
-            fechaRegistro = Date().toString(), // Fecha de hoy
-            estado = estadoSeleccionado,
-            notas = notas
-        )
+       val dataBase = (application as TechAuditApp).database //Base de datos
+        lifecycleScope.launch{
+            if(itemEditar == null){
+                //Crear
+                val nuevoItem = AuditItem(
+                    id = UUID.randomUUID().toString(),
+                    nombre = nombre,
+                    ubicacion = ubicacion,
+                    fechaRegistro = Date().toString(),
+                    estado = estadoSeleccionado,
+                    notas = notas
+                )
 
-        // E. Guardar en BD (Corutina)
-        val database = (application as TechAuditApp).database
+                dataBase.auditDao().insert(nuevoItem)
+                Toast.makeText(this@AddEditActivity, "Equipo Creado", Toast.LENGTH_SHORT).show()
 
-        lifecycleScope.launch {
-            database.auditDao().insert(nuevoItem)
+            } else{
+                //Editar
+                val itemActualizado = itemEditar!!.copy(
+                    nombre = nombre,
+                    ubicacion = ubicacion,
+                    estado = estadoSeleccionado,
+                    notas = notas
+                )
 
-            // F. Cerrar y volver
-            Toast.makeText(this@AddEditActivity, "Guardado!", Toast.LENGTH_SHORT).show()
-            finish() // Esto cierra la actividad y nos regresa al Main
+                dataBase.auditDao().update(itemActualizado)
+                Toast.makeText(this@AddEditActivity, "Equipo Actualizado", Toast.LENGTH_SHORT).show()
+            }
+            finish() //Regresar al main
         }
     }
 }
