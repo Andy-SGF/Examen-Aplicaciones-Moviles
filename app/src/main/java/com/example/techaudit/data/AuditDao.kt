@@ -22,6 +22,9 @@ interface AuditDao {
     @Query("SELECT * FROM equipos ORDER BY fechaRegistro DESC")
     fun getAllItems() : Flow<List<AuditItem>>
 
+    @Query("SELECT * FROM equipos")
+    suspend fun getEquiposList(): List<AuditItem>
+
     //Buscar uno solo por ID
     @Query("SELECT * FROM equipos WHERE id = :id")
     suspend fun getById(id: String) : AuditItem
@@ -53,5 +56,8 @@ interface AuditDao {
     //Equipos por laboratorio
     @Query("SELECT * FROM equipos WHERE laboratorioId = :labId")
     fun getEquiposByLaboratorio(labId: Int): Flow<List<AuditItem>>
+
+    @Query("SELECT * FROM laboratorios")
+    suspend fun getLaboratoriosList(): List<Laboratorio>
 
 }

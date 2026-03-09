@@ -27,4 +27,8 @@ class LaboratorioViewModel(application: Application) : AndroidViewModel(applicat
         repository.insertLaboratorio(lab)
     }
 
+    fun sincronizar() = viewModelScope.launch{
+        repository.sincronizarDatos()
+    }
+
 }

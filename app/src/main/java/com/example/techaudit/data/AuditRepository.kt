@@ -3,6 +3,7 @@ package com.example.techaudit.data
 import com.example.techaudit.model.AuditItem
 import com.example.techaudit.model.Laboratorio
 import kotlinx.coroutines.flow.Flow
+import com.example.techaudit.network.RetrofitClient
 
 class AuditRepository (private val auditDao: AuditDao) {
 
@@ -35,5 +36,23 @@ class AuditRepository (private val auditDao: AuditDao) {
 
     fun getEquiposByLaboratorio(labId: Int) =
         auditDao.getEquiposByLaboratorio(labId)
+
+    suspend fun sincronizarDatos(){
+        try{
+            //Enviar laboratorios
+            val laboratorios = auditDao.getLaboratoriosList()
+            for(lab in laboratorios){
+                RetrofitClient.api.enviarLaboratorio(lab)
+            }
+
+            //Enviar equipos
+            val equipos = auditDao.getEquiposList()
+            for(equipo in equipos){
+                RetrofitClient.api.enviarEquipo(equipo)
+            }
+        }catch(e: Exception){
+            e.printStackTrace()
+        }
+    }
 
 }
