@@ -26,7 +26,6 @@ class AddLaboratorioActivity : AppCompatActivity() {
         configurarBotonGuardar()
 
         enableEdgeToEdge()
-        setContentView(R.layout.activity_add_laboratorio)
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -51,7 +50,6 @@ class AddLaboratorioActivity : AppCompatActivity() {
             viewModel.insert(laboratorio)
             Toast.makeText(this,"Laboratorio guardado",Toast.LENGTH_SHORT).show()
             finish()
-
         }
     }
 }

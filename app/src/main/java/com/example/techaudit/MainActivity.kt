@@ -3,17 +3,19 @@ package com.example.techaudit
 import android.content.Intent
 import androidx.activity.enableEdgeToEdge
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.techaudit.adapter.LaboratorioAdapter
 import com.example.techaudit.databinding.ActivityMainBinding
 import com.example.techaudit.model.Laboratorio
 import com.example.techaudit.ui.LaboratorioViewModel
-
+import kotlinx.coroutines.launch
 
 
 class MainActivity : ComponentActivity() {
@@ -37,8 +39,23 @@ class MainActivity : ComponentActivity() {
 
         // BOTON SINCRONIZAR
         binding.btnSincronizar.setOnClickListener {
-            viewModel.sincronizar()
+            //Mostrar progress
+            binding.progressSincronizar.visibility = View.VISIBLE
+            //Desactivar botón para evitar múltiples clics
+            binding.btnSincronizar.isEnabled = false
             Toast.makeText(this,"Sincronizando...",Toast.LENGTH_SHORT).show()
+
+            lifecycleScope.launch {
+                viewModel.sincronizar()
+                //Ocultar progress cuando termine
+                binding.progressSincronizar.visibility = View.GONE
+                //Activar botón nuevamente
+                binding.btnSincronizar.isEnabled = true
+
+                Toast.makeText(this@MainActivity,"Sincronización completada",Toast.LENGTH_SHORT).show()
+            }
+
+
         }
 
         enableEdgeToEdge()

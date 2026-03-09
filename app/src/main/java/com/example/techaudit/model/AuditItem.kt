@@ -35,6 +35,8 @@ data class AuditItem(
     val laboratorioId:Int,
     var estado: AuditStatus = AuditStatus.PENDIENTE,
     var notas: String ="",
-    var fotoUri:String?=null
+    var fotoUri:String?=null,
+
+    val sincronizado: Boolean = false
 
 ):Parcelable

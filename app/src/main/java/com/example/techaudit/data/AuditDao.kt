@@ -60,4 +60,17 @@ interface AuditDao {
     @Query("SELECT * FROM laboratorios")
     suspend fun getLaboratoriosList(): List<Laboratorio>
 
+    //No sincronizados
+    @Query("SELECT * FROM laboratorios WHERE sincronizado = 0")
+    suspend fun getLaboratoriosNoSincronizados(): List<Laboratorio>
+
+    @Query("SELECT * FROM equipos WHERE sincronizado = 0")
+    suspend fun getEquiposNoSincronizados(): List<AuditItem>
+
+    @Query("UPDATE laboratorios SET sincronizado = 1 WHERE id = :id")
+    suspend fun marcarLaboratorioSincronizado(id: Int)
+
+    @Query("UPDATE equipos SET sincronizado = 1 WHERE id = :id")
+    suspend fun marcarEquipoSincronizado(id: String)
+
 }

@@ -14,5 +14,7 @@ data class Laboratorio(
     val id:Int =0,
 
     val nombre:String,
-    val edificio:String
+    val edificio:String,
+
+    val sincronizado: Boolean = false
 ): Parcelable

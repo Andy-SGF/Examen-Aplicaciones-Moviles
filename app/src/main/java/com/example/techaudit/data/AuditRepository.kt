@@ -40,15 +40,17 @@ class AuditRepository (private val auditDao: AuditDao) {
     suspend fun sincronizarDatos(){
         try{
             //Enviar laboratorios
-            val laboratorios = auditDao.getLaboratoriosList()
+            val laboratorios = auditDao.getLaboratoriosNoSincronizados()
             for(lab in laboratorios){
                 RetrofitClient.api.enviarLaboratorio(lab)
+                auditDao.marcarLaboratorioSincronizado(lab.id)
             }
 
             //Enviar equipos
-            val equipos = auditDao.getEquiposList()
+            val equipos = auditDao.getEquiposNoSincronizados()
             for(equipo in equipos){
                 RetrofitClient.api.enviarEquipo(equipo)
+                auditDao.marcarEquipoSincronizado(equipo.id)
             }
         }catch(e: Exception){
             e.printStackTrace()

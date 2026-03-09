@@ -2,11 +2,12 @@ plugins {
     alias(libs.plugins.android.application)
     id("kotlin-parcelize")
     id("com.google.devtools.ksp")
+    alias(libs.plugins.kotlin.android)
 }
 
 android {
     namespace = "com.example.techaudit"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.techaudit"
@@ -42,6 +43,9 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 dependencies {
@@ -50,6 +54,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    //implementation(libs.core.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
