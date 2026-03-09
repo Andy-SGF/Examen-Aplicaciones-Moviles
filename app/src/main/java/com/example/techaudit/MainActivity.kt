@@ -37,6 +37,7 @@ class MainActivity : ComponentActivity() {
 
         // BOTON SINCRONIZAR
         binding.btnSincronizar.setOnClickListener {
+            viewModel.sincronizar()
             Toast.makeText(this,"Sincronizando...",Toast.LENGTH_SHORT).show()
         }
 

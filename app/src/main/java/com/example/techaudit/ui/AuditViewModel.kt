@@ -38,4 +38,5 @@ class AuditViewModel(application: Application): AndroidViewModel(application) {
         return repository.getEquiposByLaboratorio(labId).asLiveData()
     }
 
+
 }
